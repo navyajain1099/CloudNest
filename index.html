@@ -13,7 +13,7 @@
           <span class="brand-mark">EV</span>
           <span>
             <strong>EventVault</strong>
-            <small>Club media ops</small>
+            <small>Event media OS</small>
           </span>
         </a>
 
@@ -21,8 +21,11 @@
           <a href="#dashboard" class="nav-link active" data-view-link="dashboard">Dashboard</a>
           <a href="#events" class="nav-link" data-view-link="events">Events</a>
           <a href="#gallery" class="nav-link" data-view-link="gallery">Gallery</a>
-          <a href="#upload" class="nav-link" data-view-link="upload">Upload</a>
+          <a href="#upload" class="nav-link" data-view-link="upload">Upload Studio</a>
+          <a href="#ai" class="nav-link" data-view-link="ai">AI Lab</a>
           <a href="#discover" class="nav-link" data-view-link="discover">Face Match</a>
+          <a href="#sharing" class="nav-link" data-view-link="sharing">Share Hub</a>
+          <a href="#moderation" class="nav-link" data-view-link="moderation">Moderation</a>
           <a href="#analytics" class="nav-link" data-view-link="analytics">Analytics</a>
         </nav>
 
@@ -41,13 +44,13 @@
       <main class="workspace">
         <header class="topbar">
           <div>
-            <p class="eyebrow">Centralized media platform</p>
+            <p class="eyebrow">Centralized event media platform</p>
             <h1 id="viewTitle">Dashboard</h1>
           </div>
           <div class="topbar-actions">
             <label class="search-box" for="globalSearch">
               <span>Search</span>
-              <input id="globalSearch" type="search" placeholder="Event, tag, uploader, date..." />
+              <input id="globalSearch" type="search" placeholder="Event, tag, uploader, date, face..." />
             </label>
             <button class="icon-btn" id="notificationButton" type="button" aria-label="Open notifications">
               <span class="dot" id="notificationDot"></span>
@@ -58,7 +61,7 @@
 
         <section class="notification-drawer" id="notificationDrawer" aria-label="Notifications" hidden>
           <div class="drawer-head">
-            <strong>Live Notifications</strong>
+            <strong>Realtime Notifications</strong>
             <button class="ghost-btn" id="clearNotifications" type="button">Clear</button>
           </div>
           <div id="notificationList" class="notification-list"></div>
@@ -67,34 +70,37 @@
         <section class="view active" id="dashboardView" data-view="dashboard" aria-labelledby="dashboard-heading">
           <div class="hero-panel">
             <div class="hero-copy">
-              <p class="eyebrow">Built for clubs, photographers, and members</p>
-              <h2 id="dashboard-heading">Find, protect, and share every event memory from one clean workspace.</h2>
+              <p class="eyebrow">Built for organizers, photographers, and members</p>
+              <h2 id="dashboard-heading">A polished workspace for uploads, AI discovery, access control, and event storytelling.</h2>
               <p>
-                EventVault organizes albums by event, handles public/private access,
-                supports social engagement, and demonstrates AI-powered search and personalized discovery.
+                EventVault brings scattered event media into one role-aware system with smart tagging,
+                facial discovery, cloud-ready storage, moderation, QR sharing, and social engagement.
               </p>
               <div class="hero-actions">
-                <button class="primary-btn" data-jump="upload" type="button">Upload Media</button>
-                <button class="secondary-btn" data-jump="gallery" type="button">Explore Gallery</button>
+                <button class="primary-btn" data-jump="upload" type="button">Start Upload Flow</button>
+                <button class="secondary-btn" data-jump="ai" type="button">Run AI Lab</button>
               </div>
             </div>
-            <div class="hero-media" aria-label="Featured event media">
-              <img src="https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&w=900&q=80" alt="Event crowd enjoying a club celebration" />
-              <div class="hero-stat">
-                <strong id="heroMediaCount">0</strong>
-                <span>organized assets</span>
+            <div class="command-stage" aria-label="Platform command preview">
+              <div class="story-strip" id="storyStrip"></div>
+              <div class="pipeline-card">
+                <div class="pipeline-head">
+                  <span class="status-dot"></span>
+                  <strong>Media pipeline live</strong>
+                </div>
+                <div id="pipelineList" class="pipeline-list"></div>
               </div>
             </div>
           </div>
 
           <div class="stat-grid" id="statGrid"></div>
 
-          <div class="split-layout">
-            <section class="panel">
+          <div class="dashboard-grid">
+            <section class="panel span-2">
               <div class="section-head">
                 <div>
-                  <p class="eyebrow">Recent activity</p>
-                  <h3>Event Operations</h3>
+                  <p class="eyebrow">Live operations</p>
+                  <h3>Activity Feed</h3>
                 </div>
               </div>
               <div class="activity-feed" id="activityFeed"></div>
@@ -102,11 +108,20 @@
             <section class="panel">
               <div class="section-head">
                 <div>
-                  <p class="eyebrow">Private access</p>
+                  <p class="eyebrow">Permissions</p>
                   <h3>Role Matrix</h3>
                 </div>
               </div>
               <div class="role-matrix" id="roleMatrix"></div>
+            </section>
+            <section class="panel">
+              <div class="section-head">
+                <div>
+                  <p class="eyebrow">System health</p>
+                  <h3>Cloud & AI Status</h3>
+                </div>
+              </div>
+              <div id="featureChecklist" class="feature-list"></div>
             </section>
           </div>
         </section>
@@ -115,7 +130,7 @@
           <div class="section-head stacked">
             <div>
               <p class="eyebrow">Event-wise organization</p>
-              <h2 id="events-heading">Albums & Event Metadata</h2>
+              <h2 id="events-heading">Albums, Stories & Collaborators</h2>
             </div>
             <div class="toolbar">
               <input id="eventName" type="text" placeholder="Event name" />
@@ -144,13 +159,11 @@
         <section class="view" id="galleryView" data-view="gallery" aria-labelledby="gallery-heading">
           <div class="section-head stacked">
             <div>
-              <p class="eyebrow">Searchable media library</p>
+              <p class="eyebrow">Advanced searchable library</p>
               <h2 id="gallery-heading">Gallery</h2>
             </div>
             <div class="filter-row compact">
-              <select id="eventFilter" aria-label="Filter by event">
-                <option value="all">All events</option>
-              </select>
+              <select id="eventFilter" aria-label="Filter by event"></select>
               <select id="accessFilter" aria-label="Filter by access">
                 <option value="all">All access</option>
                 <option value="public">Public</option>
@@ -161,9 +174,18 @@
                 <option value="photo">Photos</option>
                 <option value="video">Videos</option>
               </select>
+              <select id="statusFilter" aria-label="Filter by status">
+                <option value="all">All statuses</option>
+                <option value="approved">Approved</option>
+                <option value="review">Needs review</option>
+                <option value="duplicate">Possible duplicates</option>
+              </select>
             </div>
           </div>
-          <div class="tag-cloud" id="tagCloud"></div>
+          <div class="gallery-command">
+            <div class="tag-cloud" id="tagCloud"></div>
+            <div class="gallery-summary" id="gallerySummary"></div>
+          </div>
           <div class="media-grid" id="mediaGrid"></div>
         </section>
 
@@ -171,7 +193,7 @@
           <div class="section-head stacked">
             <div>
               <p class="eyebrow">Bulk upload pipeline</p>
-              <h2 id="upload-heading">Upload & Preview</h2>
+              <h2 id="upload-heading">Upload Studio</h2>
             </div>
           </div>
           <div class="upload-layout">
@@ -179,7 +201,7 @@
               <input id="fileInput" type="file" accept="image/*,video/*" multiple hidden />
               <button class="primary-btn" id="chooseFiles" type="button">Choose Files</button>
               <h3>Drag and drop photos or videos</h3>
-              <p>Preview assets, generate suggested tags, choose an event, and publish with access control.</p>
+              <p>Preview, compress, tag, moderate, store, and publish files to an event album.</p>
             </section>
             <section class="panel upload-form">
               <label>Event
@@ -194,33 +216,95 @@
               <label>Uploader
                 <input id="uploadUser" type="text" value="Aarav Sharma" />
               </label>
+              <label>Cloud target
+                <select id="cloudTarget">
+                  <option>AWS S3 / eventvault-originals</option>
+                  <option>AWS S3 / eventvault-private</option>
+                  <option>Local review queue</option>
+                </select>
+              </label>
               <button class="primary-btn" id="publishUploads" type="button">Publish Selected</button>
             </section>
           </div>
+          <div class="processing-board" id="processingBoard"></div>
           <div class="preview-grid" id="previewGrid"></div>
+        </section>
+
+        <section class="view" id="aiView" data-view="ai" aria-labelledby="ai-heading">
+          <div class="section-head stacked">
+            <div>
+              <p class="eyebrow">AI and ML features</p>
+              <h2 id="ai-heading">AI Lab</h2>
+            </div>
+            <button class="primary-btn" id="runAiButton" type="button">Run AI Scan</button>
+          </div>
+          <div class="ai-grid">
+            <section class="panel span-2">
+              <h3>Smart Tagging & Captions</h3>
+              <div id="aiTagBoard" class="ai-board"></div>
+            </section>
+            <section class="panel">
+              <h3>Duplicate Detection</h3>
+              <div id="duplicateBoard" class="stack-list"></div>
+            </section>
+            <section class="panel">
+              <h3>Moderation Signals</h3>
+              <div id="moderationSignals" class="stack-list"></div>
+            </section>
+            <section class="panel span-2">
+              <h3>Advanced Search Examples</h3>
+              <div class="query-chips" id="queryChips"></div>
+            </section>
+          </div>
         </section>
 
         <section class="view" id="discoverView" data-view="discover" aria-labelledby="discover-heading">
           <div class="discover-layout">
             <section class="panel selfie-panel">
-              <p class="eyebrow">Personalized discovery</p>
+              <p class="eyebrow">Facial recognition workflow</p>
               <h2 id="discover-heading">Find Photos Containing You</h2>
-              <p>Upload a reference selfie to simulate face matching across accessible event albums.</p>
+              <p>Upload a reference selfie to simulate face embeddings and return accessible matches.</p>
               <input id="selfieInput" type="file" accept="image/*" hidden />
               <button class="primary-btn" id="selfieButton" type="button">Upload Reference Selfie</button>
               <div id="selfiePreview" class="selfie-preview">No selfie selected</div>
+              <div class="face-steps">
+                <span>Detect face</span>
+                <span>Create embedding</span>
+                <span>Match gallery</span>
+                <span>Show accessible results</span>
+              </div>
             </section>
             <section>
               <div class="section-head">
                 <div>
-                  <p class="eyebrow">Matches</p>
-                  <h3>Personalized Section</h3>
+                  <p class="eyebrow">Personalized section</p>
+                  <h3>Face Matches</h3>
                 </div>
                 <span class="pill" id="matchCount">0 matches</span>
               </div>
               <div class="media-grid compact-grid" id="matchGrid"></div>
             </section>
           </div>
+        </section>
+
+        <section class="view" id="sharingView" data-view="sharing" aria-labelledby="sharing-heading">
+          <div class="section-head stacked">
+            <div>
+              <p class="eyebrow">QR albums and collaborative sharing</p>
+              <h2 id="sharing-heading">Share Hub</h2>
+            </div>
+          </div>
+          <div class="share-grid" id="shareGrid"></div>
+        </section>
+
+        <section class="view" id="moderationView" data-view="moderation" aria-labelledby="moderation-heading">
+          <div class="section-head stacked">
+            <div>
+              <p class="eyebrow">Admin quality control</p>
+              <h2 id="moderation-heading">Moderation Queue</h2>
+            </div>
+          </div>
+          <div class="moderation-grid" id="moderationGrid"></div>
         </section>
 
         <section class="view" id="analyticsView" data-view="analytics" aria-labelledby="analytics-heading">
@@ -231,7 +315,7 @@
             </div>
           </div>
           <div class="analytics-grid">
-            <section class="panel">
+            <section class="panel span-2">
               <h3>Engagement by Event</h3>
               <div id="engagementChart" class="bar-chart"></div>
             </section>
@@ -242,6 +326,10 @@
             <section class="panel">
               <h3>AI Tag Coverage</h3>
               <div id="tagCoverage" class="tag-coverage"></div>
+            </section>
+            <section class="panel">
+              <h3>Cloud Usage</h3>
+              <div id="cloudUsage" class="stack-list"></div>
             </section>
           </div>
         </section>
