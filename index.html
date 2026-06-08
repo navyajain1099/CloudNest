@@ -1,0 +1,258 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>EventVault | Event & Media Management</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar" aria-label="Main navigation">
+        <a class="brand" href="#dashboard" aria-label="EventVault home">
+          <span class="brand-mark">EV</span>
+          <span>
+            <strong>EventVault</strong>
+            <small>Club media ops</small>
+          </span>
+        </a>
+
+        <nav class="nav-list">
+          <a href="#dashboard" class="nav-link active" data-view-link="dashboard">Dashboard</a>
+          <a href="#events" class="nav-link" data-view-link="events">Events</a>
+          <a href="#gallery" class="nav-link" data-view-link="gallery">Gallery</a>
+          <a href="#upload" class="nav-link" data-view-link="upload">Upload</a>
+          <a href="#discover" class="nav-link" data-view-link="discover">Face Match</a>
+          <a href="#analytics" class="nav-link" data-view-link="analytics">Analytics</a>
+        </nav>
+
+        <section class="role-panel" aria-labelledby="role-title">
+          <p id="role-title" class="eyebrow">Active Role</p>
+          <select id="roleSelect" aria-label="Choose active role">
+            <option value="admin">Admin</option>
+            <option value="photographer">Photographer</option>
+            <option value="member">Club Member</option>
+            <option value="viewer">Viewer</option>
+          </select>
+          <p id="roleCopy">Full control over events, private albums, uploads, and moderation.</p>
+        </section>
+      </aside>
+
+      <main class="workspace">
+        <header class="topbar">
+          <div>
+            <p class="eyebrow">Centralized media platform</p>
+            <h1 id="viewTitle">Dashboard</h1>
+          </div>
+          <div class="topbar-actions">
+            <label class="search-box" for="globalSearch">
+              <span>Search</span>
+              <input id="globalSearch" type="search" placeholder="Event, tag, uploader, date..." />
+            </label>
+            <button class="icon-btn" id="notificationButton" type="button" aria-label="Open notifications">
+              <span class="dot" id="notificationDot"></span>
+              <span aria-hidden="true">Bell</span>
+            </button>
+          </div>
+        </header>
+
+        <section class="notification-drawer" id="notificationDrawer" aria-label="Notifications" hidden>
+          <div class="drawer-head">
+            <strong>Live Notifications</strong>
+            <button class="ghost-btn" id="clearNotifications" type="button">Clear</button>
+          </div>
+          <div id="notificationList" class="notification-list"></div>
+        </section>
+
+        <section class="view active" id="dashboardView" data-view="dashboard" aria-labelledby="dashboard-heading">
+          <div class="hero-panel">
+            <div class="hero-copy">
+              <p class="eyebrow">Built for clubs, photographers, and members</p>
+              <h2 id="dashboard-heading">Find, protect, and share every event memory from one clean workspace.</h2>
+              <p>
+                EventVault organizes albums by event, handles public/private access,
+                supports social engagement, and demonstrates AI-powered search and personalized discovery.
+              </p>
+              <div class="hero-actions">
+                <button class="primary-btn" data-jump="upload" type="button">Upload Media</button>
+                <button class="secondary-btn" data-jump="gallery" type="button">Explore Gallery</button>
+              </div>
+            </div>
+            <div class="hero-media" aria-label="Featured event media">
+              <img src="https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&w=900&q=80" alt="Event crowd enjoying a club celebration" />
+              <div class="hero-stat">
+                <strong id="heroMediaCount">0</strong>
+                <span>organized assets</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="stat-grid" id="statGrid"></div>
+
+          <div class="split-layout">
+            <section class="panel">
+              <div class="section-head">
+                <div>
+                  <p class="eyebrow">Recent activity</p>
+                  <h3>Event Operations</h3>
+                </div>
+              </div>
+              <div class="activity-feed" id="activityFeed"></div>
+            </section>
+            <section class="panel">
+              <div class="section-head">
+                <div>
+                  <p class="eyebrow">Private access</p>
+                  <h3>Role Matrix</h3>
+                </div>
+              </div>
+              <div class="role-matrix" id="roleMatrix"></div>
+            </section>
+          </div>
+        </section>
+
+        <section class="view" id="eventsView" data-view="events" aria-labelledby="events-heading">
+          <div class="section-head stacked">
+            <div>
+              <p class="eyebrow">Event-wise organization</p>
+              <h2 id="events-heading">Albums & Event Metadata</h2>
+            </div>
+            <div class="toolbar">
+              <input id="eventName" type="text" placeholder="Event name" />
+              <input id="eventCategory" type="text" placeholder="Category" />
+              <input id="eventDate" type="date" />
+              <button class="primary-btn" id="createEventButton" type="button">Create Event</button>
+            </div>
+          </div>
+          <div class="filter-row">
+            <label>Sort
+              <select id="eventSort">
+                <option value="date">Date</option>
+                <option value="name">Event name</option>
+                <option value="category">Category</option>
+              </select>
+            </label>
+            <label>Category
+              <select id="categoryFilter">
+                <option value="all">All</option>
+              </select>
+            </label>
+          </div>
+          <div class="event-grid" id="eventGrid"></div>
+        </section>
+
+        <section class="view" id="galleryView" data-view="gallery" aria-labelledby="gallery-heading">
+          <div class="section-head stacked">
+            <div>
+              <p class="eyebrow">Searchable media library</p>
+              <h2 id="gallery-heading">Gallery</h2>
+            </div>
+            <div class="filter-row compact">
+              <select id="eventFilter" aria-label="Filter by event">
+                <option value="all">All events</option>
+              </select>
+              <select id="accessFilter" aria-label="Filter by access">
+                <option value="all">All access</option>
+                <option value="public">Public</option>
+                <option value="private">Private</option>
+              </select>
+              <select id="typeFilter" aria-label="Filter by media type">
+                <option value="all">Photos and videos</option>
+                <option value="photo">Photos</option>
+                <option value="video">Videos</option>
+              </select>
+            </div>
+          </div>
+          <div class="tag-cloud" id="tagCloud"></div>
+          <div class="media-grid" id="mediaGrid"></div>
+        </section>
+
+        <section class="view" id="uploadView" data-view="upload" aria-labelledby="upload-heading">
+          <div class="section-head stacked">
+            <div>
+              <p class="eyebrow">Bulk upload pipeline</p>
+              <h2 id="upload-heading">Upload & Preview</h2>
+            </div>
+          </div>
+          <div class="upload-layout">
+            <section class="drop-zone" id="dropZone">
+              <input id="fileInput" type="file" accept="image/*,video/*" multiple hidden />
+              <button class="primary-btn" id="chooseFiles" type="button">Choose Files</button>
+              <h3>Drag and drop photos or videos</h3>
+              <p>Preview assets, generate suggested tags, choose an event, and publish with access control.</p>
+            </section>
+            <section class="panel upload-form">
+              <label>Event
+                <select id="uploadEvent"></select>
+              </label>
+              <label>Access
+                <select id="uploadAccess">
+                  <option value="public">Public</option>
+                  <option value="private">Private</option>
+                </select>
+              </label>
+              <label>Uploader
+                <input id="uploadUser" type="text" value="Aarav Sharma" />
+              </label>
+              <button class="primary-btn" id="publishUploads" type="button">Publish Selected</button>
+            </section>
+          </div>
+          <div class="preview-grid" id="previewGrid"></div>
+        </section>
+
+        <section class="view" id="discoverView" data-view="discover" aria-labelledby="discover-heading">
+          <div class="discover-layout">
+            <section class="panel selfie-panel">
+              <p class="eyebrow">Personalized discovery</p>
+              <h2 id="discover-heading">Find Photos Containing You</h2>
+              <p>Upload a reference selfie to simulate face matching across accessible event albums.</p>
+              <input id="selfieInput" type="file" accept="image/*" hidden />
+              <button class="primary-btn" id="selfieButton" type="button">Upload Reference Selfie</button>
+              <div id="selfiePreview" class="selfie-preview">No selfie selected</div>
+            </section>
+            <section>
+              <div class="section-head">
+                <div>
+                  <p class="eyebrow">Matches</p>
+                  <h3>Personalized Section</h3>
+                </div>
+                <span class="pill" id="matchCount">0 matches</span>
+              </div>
+              <div class="media-grid compact-grid" id="matchGrid"></div>
+            </section>
+          </div>
+        </section>
+
+        <section class="view" id="analyticsView" data-view="analytics" aria-labelledby="analytics-heading">
+          <div class="section-head stacked">
+            <div>
+              <p class="eyebrow">Operational insight</p>
+              <h2 id="analytics-heading">Analytics Dashboard</h2>
+            </div>
+          </div>
+          <div class="analytics-grid">
+            <section class="panel">
+              <h3>Engagement by Event</h3>
+              <div id="engagementChart" class="bar-chart"></div>
+            </section>
+            <section class="panel">
+              <h3>Storage Mix</h3>
+              <div id="storageChart" class="donut-wrap"></div>
+            </section>
+            <section class="panel">
+              <h3>AI Tag Coverage</h3>
+              <div id="tagCoverage" class="tag-coverage"></div>
+            </section>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <dialog id="mediaDialog" class="media-dialog">
+      <div id="dialogContent"></div>
+      <button class="icon-btn dialog-close" id="closeDialog" type="button" aria-label="Close preview">Close</button>
+    </dialog>
+
+    <script src="app.js"></script>
+  </body>
+</html>
