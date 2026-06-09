@@ -6,16 +6,16 @@ EventVault is a polished prototype for the **Event & Media Management Platform**
 
 - Event-wise albums with category/date metadata, collaborators, storage labels, highlights, and sorting.
 - Advanced gallery search by event, tag, upload date, uploader, face name, access, type, and review status.
-- Public/private access behavior with Admin, Photographer, Club Member, and Viewer roles.
-- Upload Studio with drag-and-drop bulk upload, previews, cloud target selection, generated tags, captions, and review status.
+- Backend-filtered public/private access behavior with Admin, Photographer, Club Member, and Viewer roles.
+- Upload Studio with drag-and-drop bulk upload, previews, storage target selection, generated tags, captions, and review status.
 - Social features: like, comment, share, download with watermark, add to favourites, and tag friends/users.
 - Realtime-style notifications for likes, tags, comments, album links, uploads, AI scans, and moderation actions.
 - AI Lab for smart tags, AI captions, duplicate signals, moderation signals, and advanced search examples.
 - Facial recognition workflow with reference selfie upload and personalized matching results.
-- Cloud-ready storage model using S3/CloudFront style object paths and signed URL assumptions.
-- Share Hub with QR-style album cards and copyable album links.
+- Real local object storage for uploaded files, with configurable persistent storage paths for deployment.
+- Share Hub with album cards and copyable album links.
 - Moderation Queue for private media, duplicate bursts, review items, and admin approval.
-- Analytics dashboard for engagement, storage mix, AI tag coverage, and cloud usage.
+- Analytics dashboard for engagement, storage mix, AI tag coverage, and storage usage.
 - Documentation, database schema, architecture diagram, API notes, and PPT deliverable.
 
 ## Run Locally
@@ -39,16 +39,34 @@ Do not use `python -m http.server` for the final demo, because that only serves 
 
 ## Suggested Demo Flow
 
-1. Start on **Dashboard** and switch roles from the sidebar to show access control.
-2. Use **Events** to create a collaborative album, open an album, and generate a QR share link.
-3. Use **Gallery** to filter by event, access, media type, moderation status, and AI tags.
-4. Switch to Viewer and confirm private media is locked while public media remains available.
-5. Use **Upload Studio** to choose files, preview generated tags/captions, select a cloud target, and publish.
-6. Open **AI Lab**, run an AI scan, then click search chips such as `sports trophy navya` or `private backstage`.
-7. Use **Face Match**, upload a selfie, and review personalized matches.
-8. Use **Share Hub** to copy QR album links.
-9. Use **Moderation** as Admin to approve review/duplicate items.
-10. Finish with **Analytics** to show engagement, storage, AI coverage, and cloud usage.
+1. Sign in with one of the seeded accounts below.
+2. Start on **Dashboard** and review the signed-in user panel in the sidebar.
+3. Sign out and sign in as Viewer to confirm private media is not returned by the backend.
+4. Use **Events** to create a collaborative album, open an album, and copy an album share link.
+5. Use **Gallery** to filter by event, access, media type, moderation status, and AI tags.
+6. Use **Upload Studio** as Admin or Photographer to choose files, preview generated tags/captions, select a storage target, and publish.
+7. Open **AI Lab**, run an AI scan, then click search chips such as `sports trophy navya` or `private backstage`.
+8. Use **Face Match**, upload a selfie, and review personalized matches.
+9. Use **Share Hub** to copy album links.
+10. Use **Moderation** as Admin to approve review/duplicate items.
+11. Finish with **Analytics** to show engagement, storage, AI coverage, and storage usage.
+
+## Demo Accounts
+
+You can create your own account from the **Create ID** tab on the login screen. Seeded demo accounts are also available.
+
+All seeded accounts use this password:
+
+```text
+eventvault
+```
+
+| Role | Email |
+| --- | --- |
+| Admin | `admin@eventvault.local` |
+| Photographer | `photo@eventvault.local` |
+| Club Member | `member@eventvault.local` |
+| Viewer | `viewer@eventvault.local` |
 
 ## Production Architecture
 
@@ -57,7 +75,7 @@ This prototype is browser-side for easy evaluation. A production implementation 
 - Frontend: React or Next.js SPA/PWA.
 - Backend API: Node.js/Express or NestJS.
 - Database: PostgreSQL for users, events, albums, media metadata, comments, permissions, and audit logs.
-- Object storage: AWS S3 with CloudFront CDN and signed URLs.
+- Object storage: the current deployable build uses server-side persistent file storage; it can be replaced with AWS S3 and CloudFront when credentials are available.
 - AI services: image tagging, moderation, duplicate detection, captions, and face embeddings.
 - Realtime: WebSocket or managed pub/sub for notifications.
 - Workers: asynchronous upload compression, watermarking, thumbnail generation, indexing, and moderation.
@@ -87,4 +105,4 @@ See `docs/architecture.md` and `docs/database_schema.sql` for implementation det
 
 ## Notes
 
-The app now uses a real local backend for events, media metadata, uploads, comments, likes, favourites, friend tags, AI scan updates, moderation approvals, sharing notifications, and persistence. Cloud storage and ML features are implemented through local working adapters and clearly named S3/AI boundaries, so they can be replaced with AWS S3, Rekognition, OpenSearch, or a custom ML service when credentials/models are available.
+The app now uses a real local backend for events, media metadata, uploads, comments, likes, favourites, friend tags, AI scan updates, moderation approvals, sharing notifications, role-filtered access, and persistence. Storage is real server-side file storage. AI features are implemented as deterministic local services so they work after deployment without external keys; they can be replaced with AWS Rekognition, OpenSearch, or a custom ML service when credentials/models are available.

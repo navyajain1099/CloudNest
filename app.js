@@ -1,5 +1,6 @@
 const state = {
   role: "admin",
+  currentUser: null,
   view: "dashboard",
   query: "",
   selectedTag: "all",
@@ -11,10 +12,11 @@ const state = {
   eventCategory: "all",
   previews: [],
   aiLastRun: "2 min ago",
+  authMode: "login",
   notifications: [
     { text: "AI tagged 18 new photos from Cultural Fest Night.", time: "now" },
     { text: "Rohan tagged you in Campfire circle.", time: "8 min ago" },
-    { text: "A QR album link was created for Inter-Club Sports League.", time: "18 min ago" }
+    { text: "An album share link was created for Inter-Club Sports League.", time: "18 min ago" }
   ],
   events: [
     {
@@ -27,7 +29,7 @@ const state = {
       access: "mixed",
       collaborators: ["Meera", "Aarav", "Isha"],
       story: "Best of main stage",
-      storage: "S3 originals"
+      storage: "Object storage"
     },
     {
       id: "ev-mountain",
@@ -39,7 +41,7 @@ const state = {
       access: "private",
       collaborators: ["Rohan", "Isha"],
       story: "Trail highlights",
-      storage: "S3 private"
+      storage: "Private object storage"
     },
     {
       id: "ev-workshop",
@@ -51,7 +53,7 @@ const state = {
       access: "mixed",
       collaborators: ["Meera", "Kabir"],
       story: "Learning moments",
-      storage: "S3 originals"
+      storage: "Object storage"
     },
     {
       id: "ev-sports",
@@ -63,7 +65,7 @@ const state = {
       access: "public",
       collaborators: ["Kabir", "Aarav", "Navya"],
       story: "Final whistle",
-      storage: "CloudFront CDN"
+      storage: "Public delivery"
     }
   ],
   media: [
@@ -85,7 +87,7 @@ const state = {
       status: "approved",
       moderation: "Safe",
       duplicateScore: 8,
-      cloud: "s3://eventvault-originals/cultural/opening.jpg"
+      cloud: "storage://eventvault-originals/cultural/opening.jpg"
     },
     {
       id: "m2",
@@ -105,7 +107,7 @@ const state = {
       status: "review",
       moderation: "Contains private faces",
       duplicateScore: 12,
-      cloud: "s3://eventvault-private/cultural/backstage.jpg"
+      cloud: "storage://eventvault-private/cultural/backstage.jpg"
     },
     {
       id: "m3",
@@ -125,7 +127,7 @@ const state = {
       status: "approved",
       moderation: "Safe",
       duplicateScore: 4,
-      cloud: "s3://eventvault-originals/trip/ridge.jpg"
+      cloud: "storage://eventvault-originals/trip/ridge.jpg"
     },
     {
       id: "m4",
@@ -145,7 +147,7 @@ const state = {
       status: "approved",
       moderation: "Safe",
       duplicateScore: 6,
-      cloud: "s3://eventvault-originals/workshop/prompt-lab.jpg"
+      cloud: "storage://eventvault-originals/workshop/prompt-lab.jpg"
     },
     {
       id: "m5",
@@ -165,12 +167,12 @@ const state = {
       status: "duplicate",
       moderation: "Possible duplicate burst",
       duplicateScore: 91,
-      cloud: "s3://eventvault-originals/sports/final-goal.jpg"
+      cloud: "storage://eventvault-originals/sports/final-goal.jpg"
     },
     {
       id: "m6",
       eventId: "ev-workshop",
-      title: "Cloud upload walkthrough",
+      title: "Storage upload walkthrough",
       type: "video",
       access: "public",
       url: "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4",
@@ -181,11 +183,11 @@ const state = {
       likes: 53,
       comments: ["Trim intro before publishing."],
       favourites: 9,
-      caption: "A short demo clip explaining direct-to-S3 uploads.",
+      caption: "A short demo clip explaining direct object-storage uploads.",
       status: "review",
       moderation: "Needs trim approval",
       duplicateScore: 0,
-      cloud: "s3://eventvault-originals/workshop/cloud-demo.mp4"
+      cloud: "storage://eventvault-originals/workshop/cloud-demo.mp4"
     },
     {
       id: "m7",
@@ -205,7 +207,7 @@ const state = {
       status: "review",
       moderation: "Private night scene",
       duplicateScore: 18,
-      cloud: "s3://eventvault-private/trip/campfire.jpg"
+      cloud: "storage://eventvault-private/trip/campfire.jpg"
     },
     {
       id: "m8",
@@ -225,7 +227,7 @@ const state = {
       status: "approved",
       moderation: "Safe",
       duplicateScore: 7,
-      cloud: "s3://eventvault-originals/sports/trophy.jpg"
+      cloud: "storage://eventvault-originals/sports/trophy.jpg"
     }
   ]
 };
@@ -234,7 +236,7 @@ const roleCopy = {
   admin: "Full control over events, private albums, uploads, AI review, and moderation.",
   photographer: "Can upload media, manage own albums, view assignments, and submit review items.",
   member: "Can access member albums, comment, favourite, download, tag friends, and run face discovery.",
-  viewer: "Can browse public albums, share public QR links, and interact with public media."
+  viewer: "Can browse public albums, share public album links, and interact with public media."
 };
 
 const roleAccess = {
@@ -253,7 +255,7 @@ const processingSteps = [
 ];
 
 const systemHealth = [
-  ["Storage sync", "S3 originals and private bucket active", "99.9%"],
+  ["Storage sync", "Object storage and private bucket active", "99.9%"],
   ["AI indexing", "Tags, captions, faces, duplicates", "Live"],
   ["Access policy", "Signed URLs enforced for private media", "Healthy"],
   ["Review queue", "Items waiting for admin decision", "3"]
@@ -276,7 +278,7 @@ async function apiRequest(path, options = {}) {
 
 async function syncFromServer() {
   try {
-    const data = await apiRequest("/api/bootstrap");
+    const data = await apiRequest(`/api/bootstrap?role=${encodeURIComponent(state.role)}`);
     applyServerState(data);
   } catch (error) {
     createNotification("Backend unavailable. Running with browser fallback data.");
@@ -287,6 +289,10 @@ function applyServerState(data) {
   if (data.events) state.events = data.events;
   if (data.media) state.media = data.media;
   if (data.notifications) state.notifications = data.notifications;
+  if (data.user) {
+    state.currentUser = data.user;
+    state.role = data.user.role;
+  }
 }
 
 function fileToDataUrl(file) {
@@ -304,6 +310,45 @@ function eventById(id) {
 
 function canView(media) {
   return media.access === "public" || roleAccess[state.role].private;
+}
+
+function showLogin() {
+  $("#loginScreen").classList.remove("hidden");
+}
+
+function hideLogin() {
+  $("#loginScreen").classList.add("hidden");
+}
+
+function saveSession(user) {
+  localStorage.setItem("eventvault_user", JSON.stringify(user));
+}
+
+function loadSession() {
+  try {
+    return JSON.parse(localStorage.getItem("eventvault_user") || "null");
+  } catch {
+    return null;
+  }
+}
+
+function clearSession() {
+  localStorage.removeItem("eventvault_user");
+}
+
+function setAuthMode(mode) {
+  state.authMode = mode;
+  $("#loginForm").classList.toggle("register-mode", mode === "register");
+  $("#authSubmit").textContent = mode === "register" ? "Create ID" : "Sign In";
+  $$(".auth-tab").forEach((button) => button.classList.toggle("active", button.dataset.authMode === mode));
+  $("#loginError").textContent = "";
+  if (mode === "register" && $("#loginEmail").value.endsWith("@eventvault.local")) {
+    $("#loginEmail").value = "";
+    $("#loginPassword").value = "";
+  }
+  if (mode === "login" && !$("#loginPassword").value) {
+    $("#loginPassword").value = "eventvault";
+  }
 }
 
 function normalize(value) {
@@ -370,8 +415,18 @@ function updateNavigation() {
   $("#viewTitle").textContent = labels[state.view] || "Dashboard";
   $$(".view").forEach((view) => view.classList.toggle("active", view.dataset.view === state.view));
   $$(".nav-link").forEach((link) => link.classList.toggle("active", link.dataset.viewLink === state.view));
-  $("#roleSelect").value = state.role;
+  $("#sessionName").textContent = state.currentUser?.name || "Signed out";
+  $("#sessionRole").textContent = formatRole(state.role);
   $("#roleCopy").textContent = roleCopy[state.role];
+}
+
+function formatRole(role) {
+  return {
+    admin: "Admin",
+    photographer: "Photographer",
+    member: "Club Member",
+    viewer: "Viewer"
+  }[role] || role;
 }
 
 function renderDashboard() {
@@ -379,27 +434,15 @@ function renderDashboard() {
   const tagCount = new Set(state.media.flatMap((media) => media.tags)).size;
   const reviewCount = state.media.filter((media) => media.status !== "approved").length;
   const privateCount = state.media.filter((media) => media.access === "private").length;
-
-  $("#storyStrip").innerHTML = state.events.slice(0, 3).map((event) => `
-    <article class="story-card">
-      <img src="${event.cover}" alt="${event.name}" />
-      <span>${event.story}</span>
-    </article>
-  `).join("");
-
-  $("#pipelineList").innerHTML = processingSteps.map(([step, status]) => `
-    <div class="pipeline-step">
-      <span>${step}</span>
-      <span>${status}</span>
-    </div>
-  `).join("");
+  const userName = state.currentUser?.name?.split(" ")[0] || "there";
+  $("#dashboardGreeting").textContent = `Welcome back, ${userName}. Here is the current media workload for your workspace.`;
 
   $("#statGrid").innerHTML = [
-    ["Events", state.events.length, "album spaces"],
-    ["Media", state.media.length, "indexed assets"],
-    ["Private", privateCount, "protected files"],
-    ["AI tags", tagCount, "search labels"],
-    ["Review", reviewCount, "queue items"]
+    ["Events", state.events.length, "active album spaces"],
+    ["Assets", state.media.length, "photos and videos"],
+    ["Private", privateCount, "authorized records"],
+    ["AI coverage", tagCount, "searchable labels"],
+    ["Review", reviewCount, "open decisions"]
   ].map(([label, value, copy]) => `
     <article class="stat-card">
       <span>${label}</span>
@@ -408,27 +451,44 @@ function renderDashboard() {
     </article>
   `).join("");
 
-  $("#activityFeed").innerHTML = state.media.slice(0, 6).map((media) => `
+  const queue = state.media
+    .filter((media) => media.status !== "approved")
+    .concat(state.media.filter((media) => media.status === "approved").slice(0, 3))
+    .slice(0, 6);
+  $("#activityFeed").innerHTML = queue.map((media) => `
     <article class="activity-item">
       <div>
         <strong>${media.title}</strong>
-        <p>${media.uploader} uploaded to ${eventById(media.eventId).name}</p>
+        <p>${media.status === "approved" ? "Recently indexed" : "Needs decision"} - ${eventById(media.eventId).name}</p>
       </div>
       <span class="risk-badge ${media.status}">${media.status}</span>
     </article>
   `).join("");
 
-  $("#roleMatrix").innerHTML = [
-    ["Admin", "Events, uploads, AI, private media, moderation"],
-    ["Photographer", "Uploads, assigned albums, own media"],
-    ["Club Member", "Private viewing, favourites, downloads"],
-    ["Viewer", "Public browsing and public sharing"]
-  ].map(([role, scope]) => `
+  const permissions = [
+    ["View private media", roleAccess[state.role].private ? "Enabled" : "Public only"],
+    ["Upload media", roleAccess[state.role].upload ? "Enabled" : "Restricted"],
+    ["Create events", roleAccess[state.role].events ? "Enabled" : "Restricted"],
+    ["Moderate queue", roleAccess[state.role].moderate ? "Enabled" : "Restricted"]
+  ];
+  $("#roleMatrix").innerHTML = permissions.map(([label, status]) => `
     <div class="matrix-row">
-      <strong>${role}</strong>
-      <span>${scope}</span>
+      <strong>${label}</strong>
+      <span>${status}</span>
     </div>
   `).join("");
+
+  $("#dashboardAlbums").innerHTML = state.events.slice(0, 4).map((event) => {
+    const assets = state.media.filter((media) => media.eventId === event.id).length;
+    return `
+      <button class="album-mini" type="button" data-filter-event="${event.id}">
+        <img src="${event.cover}" alt="${event.name}" />
+        <span>${event.category}</span>
+        <strong>${event.name}</strong>
+        <small>${assets} assets - ${formatDate(event.date)}</small>
+      </button>
+    `;
+  }).join("");
 
   const healthRows = systemHealth.map((row) => [...row]);
   healthRows[3][2] = String(reviewCount);
@@ -476,7 +536,7 @@ function renderEvents() {
           <div class="collab-row">${people}<span>${event.collaborators.length} collaborators</span></div>
           <div class="media-actions">
             <button type="button" data-filter-event="${event.id}">Open Album</button>
-            <button type="button" data-share-event="${event.id}">QR Share</button>
+            <button type="button" data-share-event="${event.id}">Share Album</button>
           </div>
         </div>
       </article>
@@ -502,7 +562,7 @@ function renderMediaCard(media) {
   const event = eventById(media.eventId);
   const locked = !canView(media);
   const thumb = locked
-    ? `<div class="locked"><strong>Private media</strong><span>Switch to a club role to preview.</span></div>`
+    ? `<div class="locked"><strong>Private media</strong><span>Your account is not authorized to preview this item.</span></div>`
     : media.type === "video"
       ? `<video src="${media.url}" muted></video>`
       : `<img src="${media.url}" alt="${media.title}" />`;
@@ -628,7 +688,7 @@ function renderSharing() {
         <span class="card-kicker">${event.category}</span>
         <h3>${event.name}</h3>
         <p>${assets.length} assets - ${event.access} album - ${event.storage}</p>
-        ${fakeQr(event.id)}
+        ${shareLinkPreview(event.id)}
         <div class="media-actions">
           <button type="button" data-copy-album="${event.id}">Copy Album Link</button>
           <button type="button" data-filter-event="${event.id}">Open</button>
@@ -695,7 +755,7 @@ function renderAnalytics() {
     ["Compressed delivery", "11.4 GB"],
     ["Private signed reads", "218"],
     ["Watermarked downloads", "76"],
-    ["CDN cache hit", "91%"]
+    ["Delivery cache hit", "91%"]
   ].map(([label, value]) => `
     <div class="stack-item"><strong>${label}</strong><span>${value}</span></div>
   `).join("");
@@ -824,13 +884,8 @@ function downloadWatermarked(id) {
   img.src = media.url;
 }
 
-function fakeQr(seed) {
-  const bits = Array.from({ length: 49 }, (_, index) => {
-    const code = seed.charCodeAt(index % seed.length) + index * 7;
-    const finder = index < 14 && index % 7 < 2 || index > 34 && index % 7 > 4 || index % 7 === 0 && index < 21;
-    return `<span class="${code % 3 === 0 || finder ? "" : "off"}"></span>`;
-  }).join("");
-  return `<div class="qr" aria-label="QR preview">${bits}</div>`;
+function shareLinkPreview(eventId) {
+  return `<div class="share-link-preview">${location.origin || "http://localhost:5173"}/index.html#gallery?event=${eventId}</div>`;
 }
 
 function bindEvents() {
@@ -842,9 +897,42 @@ function bindEvents() {
   });
 
   $$("[data-jump]").forEach((button) => button.addEventListener("click", () => setView(button.dataset.jump)));
-  $("#roleSelect").addEventListener("change", (event) => {
-    state.role = event.target.value;
-    render();
+  $("#loginForm").addEventListener("submit", async (event) => {
+    event.preventDefault();
+    $("#loginError").textContent = "";
+    try {
+      const endpoint = state.authMode === "register" ? "/api/auth/register" : "/api/auth/login";
+      const requestBody = state.authMode === "register"
+        ? {
+            name: $("#registerName").value,
+            email: $("#loginEmail").value,
+            password: $("#loginPassword").value,
+            role: $("#registerRole").value
+          }
+        : {
+            email: $("#loginEmail").value,
+            password: $("#loginPassword").value
+          };
+      const payload = await apiRequest(endpoint, {
+        method: "POST",
+        body: JSON.stringify(requestBody)
+      });
+      applyServerState(payload);
+      saveSession(payload.user);
+      hideLogin();
+      render();
+    } catch (error) {
+      $("#loginError").textContent = error.message;
+    }
+  });
+  $("#logoutButton").addEventListener("click", () => {
+    clearSession();
+    state.currentUser = null;
+    state.role = "viewer";
+    showLogin();
+  });
+  $$(".auth-tab").forEach((button) => {
+    button.addEventListener("click", () => setAuthMode(button.dataset.authMode));
   });
   $("#globalSearch").addEventListener("input", (event) => {
     state.query = event.target.value;
@@ -920,7 +1008,10 @@ function bindEvents() {
   });
   $("#clearNotifications").addEventListener("click", async () => {
     try {
-      applyServerState(await apiRequest("/api/notifications/clear", { method: "POST", body: "{}" }));
+    applyServerState(await apiRequest("/api/notifications/clear", {
+      method: "POST",
+      body: JSON.stringify({ role: state.role })
+    }));
     } catch {
       state.notifications = [];
     }
@@ -957,7 +1048,10 @@ async function updateMetric(id, field, amount, action) {
   if (!media) return;
   try {
     const endpoint = field === "favourites" ? "favourite" : "like";
-    applyServerState(await apiRequest(`/api/media/${id}/${endpoint}`, { method: "POST", body: "{}" }));
+    applyServerState(await apiRequest(`/api/media/${id}/${endpoint}`, {
+      method: "POST",
+      body: JSON.stringify({ role: state.role })
+    }));
   } catch {
     media[field] += amount;
     createNotification(`You ${action} "${media.title}".`);
@@ -974,7 +1068,7 @@ async function addComment(id) {
   try {
     applyServerState(await apiRequest(`/api/media/${id}/comment`, {
       method: "POST",
-      body: JSON.stringify({ body: comment })
+      body: JSON.stringify({ body: comment, role: state.role })
     }));
   } catch {
     media.comments.push(comment);
@@ -991,7 +1085,7 @@ async function tagUser(id) {
   try {
     applyServerState(await apiRequest(`/api/media/${id}/tag-user`, {
       method: "POST",
-      body: JSON.stringify({ person })
+      body: JSON.stringify({ person, role: state.role })
     }));
   } catch {
     media.faces.push(normalize(person));
@@ -1008,7 +1102,10 @@ async function shareMedia(id) {
   const shareLink = `${location.origin}${location.pathname}#gallery?event=${event.id}&media=${media.id}`;
   navigator.clipboard?.writeText(shareLink);
   try {
-    applyServerState(await apiRequest(`/api/media/${id}/share`, { method: "POST", body: "{}" }));
+    applyServerState(await apiRequest(`/api/media/${id}/share`, {
+      method: "POST",
+      body: JSON.stringify({ role: state.role })
+    }));
   } catch {
     createNotification(`Share link copied for ${media.title}.`);
   }
@@ -1021,10 +1118,10 @@ async function copyAlbumLink(id) {
   try {
     applyServerState(await apiRequest("/api/share/album", {
       method: "POST",
-      body: JSON.stringify({ eventId: id })
+      body: JSON.stringify({ eventId: id, role: state.role })
     }));
   } catch {
-    createNotification(`QR album link copied for ${event.name}.`);
+    createNotification(`Album link copied for ${event.name}.`);
   }
   renderNotifications();
 }
@@ -1046,7 +1143,7 @@ async function createEvent() {
   try {
     applyServerState(await apiRequest("/api/events", {
       method: "POST",
-      body: JSON.stringify({ name, category, date })
+      body: JSON.stringify({ name, category, date, role: state.role })
     }));
   } catch {
     state.events.unshift({
@@ -1054,12 +1151,12 @@ async function createEvent() {
       name,
       category,
       date,
-      description: "New collaborative event album ready for uploads, AI indexing, QR sharing, and access rules.",
+      description: "New collaborative event album ready for uploads, AI indexing, album sharing, and access rules.",
       cover: "https://images.unsplash.com/photo-1511578314322-379afb476865?auto=format&fit=crop&w=900&q=80",
       access: "mixed",
       collaborators: ["Admin"],
       story: "New highlight",
-      storage: "S3 originals"
+      storage: "Object storage"
     });
     createNotification(`Created event album "${name}".`);
   }
@@ -1101,7 +1198,7 @@ async function publishUploads() {
     })));
     applyServerState(await apiRequest("/api/media/upload", {
       method: "POST",
-      body: JSON.stringify({ eventId, access, uploader, cloudTarget, files })
+      body: JSON.stringify({ eventId, access, uploader, cloudTarget, files, role: state.role })
     }));
   } catch {
     state.previews.forEach((file) => {
@@ -1135,7 +1232,10 @@ async function publishUploads() {
 
 async function runAiScan() {
   try {
-    applyServerState(await apiRequest("/api/ai/scan", { method: "POST", body: "{}" }));
+    applyServerState(await apiRequest("/api/ai/scan", {
+      method: "POST",
+      body: JSON.stringify({ role: state.role })
+    }));
   } catch {
     state.media.forEach((media) => {
       if (!media.tags.includes("ai-indexed")) media.tags.push("ai-indexed");
@@ -1162,7 +1262,10 @@ async function approveMedia(id) {
   const media = state.media.find((item) => item.id === id);
   if (!media) return;
   try {
-    applyServerState(await apiRequest(`/api/media/${id}/approve`, { method: "POST", body: "{}" }));
+    applyServerState(await apiRequest(`/api/media/${id}/approve`, {
+      method: "POST",
+      body: JSON.stringify({ role: state.role })
+    }));
   } catch {
     media.status = "approved";
     media.moderation = "Approved by admin";
@@ -1176,8 +1279,17 @@ async function boot() {
   if (initial && document.querySelector(`[data-view="${initial}"]`)) {
     state.view = initial;
   }
-  await syncFromServer();
   bindEvents();
+  const session = loadSession();
+  if (session) {
+    state.currentUser = session;
+    state.role = session.role;
+    hideLogin();
+    await syncFromServer();
+  } else {
+    state.role = "viewer";
+    showLogin();
+  }
   render();
 }
 

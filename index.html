@@ -7,6 +7,48 @@
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
+    <section class="login-screen" id="loginScreen" aria-labelledby="login-heading">
+      <div class="login-card">
+        <div>
+          <span class="brand-mark">EV</span>
+          <p class="eyebrow">Secure workspace</p>
+          <h1 id="login-heading">Sign in to EventVault</h1>
+          <p>Access event albums, uploads, moderation, discovery, and sharing based on your assigned role.</p>
+        </div>
+        <form id="loginForm" class="login-form">
+          <div class="auth-tabs" role="tablist" aria-label="Authentication mode">
+            <button class="auth-tab active" type="button" data-auth-mode="login">Sign in</button>
+            <button class="auth-tab" type="button" data-auth-mode="register">Create ID</button>
+          </div>
+          <label class="register-field">Full name
+            <input id="registerName" type="text" placeholder="Your name" autocomplete="name" />
+          </label>
+          <label>Email
+            <input id="loginEmail" list="demoEmails" type="email" value="admin@eventvault.local" autocomplete="email" />
+            <datalist id="demoEmails">
+              <option value="admin@eventvault.local">admin@eventvault.local</option>
+              <option value="photo@eventvault.local">photo@eventvault.local</option>
+              <option value="member@eventvault.local">member@eventvault.local</option>
+              <option value="viewer@eventvault.local">viewer@eventvault.local</option>
+            </datalist>
+          </label>
+          <label>Password
+            <input id="loginPassword" type="password" value="eventvault" autocomplete="current-password" />
+          </label>
+          <label class="register-field">Account type
+            <select id="registerRole">
+              <option value="member">Club Member</option>
+              <option value="photographer">Photographer</option>
+              <option value="viewer">Viewer</option>
+              <option value="admin">Admin</option>
+            </select>
+          </label>
+          <button class="primary-btn" id="authSubmit" type="submit">Sign In</button>
+          <p id="loginError" class="form-error" role="alert"></p>
+        </form>
+      </div>
+    </section>
+
     <div class="app-shell">
       <aside class="sidebar" aria-label="Main navigation">
         <a class="brand" href="#dashboard" aria-label="EventVault home">
@@ -29,22 +71,21 @@
           <a href="#analytics" class="nav-link" data-view-link="analytics">Analytics</a>
         </nav>
 
-        <section class="role-panel" aria-labelledby="role-title">
-          <p id="role-title" class="eyebrow">Active Role</p>
-          <select id="roleSelect" aria-label="Choose active role">
-            <option value="admin">Admin</option>
-            <option value="photographer">Photographer</option>
-            <option value="member">Club Member</option>
-            <option value="viewer">Viewer</option>
-          </select>
+        <section class="role-panel" aria-labelledby="session-title">
+          <p id="session-title" class="eyebrow">Signed In</p>
+          <div class="session-user">
+            <strong id="sessionName">Admin</strong>
+            <span id="sessionRole">Admin</span>
+          </div>
           <p id="roleCopy">Full control over events, private albums, uploads, and moderation.</p>
+          <button class="ghost-btn logout-btn" id="logoutButton" type="button">Sign Out</button>
         </section>
       </aside>
 
       <main class="workspace">
         <header class="topbar">
           <div>
-            <p class="eyebrow">Centralized event media platform</p>
+            <p class="eyebrow">Production-ready event media platform</p>
             <h1 id="viewTitle">Dashboard</h1>
           </div>
           <div class="topbar-actions">
@@ -68,28 +109,16 @@
         </section>
 
         <section class="view active" id="dashboardView" data-view="dashboard" aria-labelledby="dashboard-heading">
-          <div class="hero-panel">
-            <div class="hero-copy">
-              <p class="eyebrow">Built for organizers, photographers, and members</p>
-              <h2 id="dashboard-heading">A polished workspace for uploads, AI discovery, access control, and event storytelling.</h2>
-              <p>
-                EventVault brings scattered event media into one role-aware system with smart tagging,
-                facial discovery, cloud-ready storage, moderation, QR sharing, and social engagement.
-              </p>
-              <div class="hero-actions">
-                <button class="primary-btn" data-jump="upload" type="button">Start Upload Flow</button>
-                <button class="secondary-btn" data-jump="ai" type="button">Run AI Lab</button>
-              </div>
+          <div class="business-header">
+            <div>
+              <p class="eyebrow">Today</p>
+              <h2 id="dashboard-heading">Workspace overview</h2>
+              <p id="dashboardGreeting">Your event media workspace is ready.</p>
             </div>
-            <div class="command-stage" aria-label="Platform command preview">
-              <div class="story-strip" id="storyStrip"></div>
-              <div class="pipeline-card">
-                <div class="pipeline-head">
-                  <span class="status-dot"></span>
-                  <strong>Media pipeline live</strong>
-                </div>
-                <div id="pipelineList" class="pipeline-list"></div>
-              </div>
+            <div class="business-actions">
+              <button class="primary-btn" data-jump="upload" type="button">Upload Media</button>
+              <button class="secondary-btn" data-jump="events" type="button">New Event</button>
+              <button class="secondary-btn" data-jump="moderation" type="button">Review Queue</button>
             </div>
           </div>
 
@@ -99,8 +128,8 @@
             <section class="panel span-2">
               <div class="section-head">
                 <div>
-                  <p class="eyebrow">Live operations</p>
-                  <h3>Activity Feed</h3>
+                  <p class="eyebrow">Work queue</p>
+                  <h3>Requires attention</h3>
                 </div>
               </div>
               <div class="activity-feed" id="activityFeed"></div>
@@ -108,17 +137,26 @@
             <section class="panel">
               <div class="section-head">
                 <div>
-                  <p class="eyebrow">Permissions</p>
-                  <h3>Role Matrix</h3>
+                  <p class="eyebrow">Current access</p>
+                  <h3>Your permissions</h3>
                 </div>
               </div>
               <div class="role-matrix" id="roleMatrix"></div>
+            </section>
+            <section class="panel span-2">
+              <div class="section-head">
+                <div>
+                  <p class="eyebrow">Active albums</p>
+                  <h3>Recent event spaces</h3>
+                </div>
+              </div>
+              <div id="dashboardAlbums" class="album-strip"></div>
             </section>
             <section class="panel">
               <div class="section-head">
                 <div>
                   <p class="eyebrow">System health</p>
-                  <h3>Cloud & AI Status</h3>
+                  <h3>Storage & AI Status</h3>
                 </div>
               </div>
               <div id="featureChecklist" class="feature-list"></div>
@@ -216,10 +254,10 @@
               <label>Uploader
                 <input id="uploadUser" type="text" value="Aarav Sharma" />
               </label>
-              <label>Cloud target
+              <label>Storage target
                 <select id="cloudTarget">
-                  <option>AWS S3 / eventvault-originals</option>
-                  <option>AWS S3 / eventvault-private</option>
+                  <option>Persistent storage / originals</option>
+                  <option>Persistent storage / private</option>
                   <option>Local review queue</option>
                 </select>
               </label>
@@ -263,7 +301,7 @@
             <section class="panel selfie-panel">
               <p class="eyebrow">Facial recognition workflow</p>
               <h2 id="discover-heading">Find Photos Containing You</h2>
-              <p>Upload a reference selfie to simulate face embeddings and return accessible matches.</p>
+              <p>Upload a reference selfie to create a local match profile and return accessible photos containing that person.</p>
               <input id="selfieInput" type="file" accept="image/*" hidden />
               <button class="primary-btn" id="selfieButton" type="button">Upload Reference Selfie</button>
               <div id="selfiePreview" class="selfie-preview">No selfie selected</div>
@@ -290,7 +328,7 @@
         <section class="view" id="sharingView" data-view="sharing" aria-labelledby="sharing-heading">
           <div class="section-head stacked">
             <div>
-              <p class="eyebrow">QR albums and collaborative sharing</p>
+              <p class="eyebrow">Album links and collaborative sharing</p>
               <h2 id="sharing-heading">Share Hub</h2>
             </div>
           </div>
@@ -328,7 +366,7 @@
               <div id="tagCoverage" class="tag-coverage"></div>
             </section>
             <section class="panel">
-              <h3>Cloud Usage</h3>
+              <h3>Storage Usage</h3>
               <div id="cloudUsage" class="stack-list"></div>
             </section>
           </div>
