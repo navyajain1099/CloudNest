@@ -25,7 +25,7 @@ const state = {
       category: "Fest",
       date: "2026-02-18",
       description: "Main stage performances, backstage moments, crowd highlights, and winner portraits.",
-      cover: "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&w=900&q=80",
+      cover: "abstract://event/cultural",
       access: "mixed",
       collaborators: ["Meera", "Aarav", "Isha"],
       story: "Best of main stage",
@@ -37,7 +37,7 @@ const state = {
       category: "Trip",
       date: "2026-01-12",
       description: "Outdoor shoot curated by the photography club with landscapes, portraits, and travel clips.",
-      cover: "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=900&q=80",
+      cover: "abstract://event/mountain",
       access: "private",
       collaborators: ["Rohan", "Isha"],
       story: "Trail highlights",
@@ -49,7 +49,7 @@ const state = {
       category: "Workshop",
       date: "2026-03-04",
       description: "Hands-on session covering image tagging, media rights, cloud storage, and search.",
-      cover: "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&w=900&q=80",
+      cover: "abstract://event/workshop",
       access: "mixed",
       collaborators: ["Meera", "Kabir"],
       story: "Learning moments",
@@ -61,7 +61,7 @@ const state = {
       category: "Sports",
       date: "2026-03-21",
       description: "Matchday photos, team huddles, action shots, trophy presentations, and short reels.",
-      cover: "https://images.unsplash.com/photo-1461896836934-ffe607ba8211?auto=format&fit=crop&w=900&q=80",
+      cover: "abstract://event/sports",
       access: "public",
       collaborators: ["Kabir", "Aarav", "Navya"],
       story: "Final whistle",
@@ -75,7 +75,7 @@ const state = {
       title: "Opening performance",
       type: "photo",
       access: "public",
-      url: "https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?auto=format&fit=crop&w=900&q=80",
+      url: "abstract://media/opening-performance",
       uploader: "Meera Nair",
       date: "2026-02-18",
       tags: ["stage", "crowd", "culture", "night"],
@@ -95,7 +95,7 @@ const state = {
       title: "Backstage portrait",
       type: "photo",
       access: "private",
-      url: "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&w=900&q=80",
+      url: "abstract://media/backstage-portrait",
       uploader: "Aarav Sharma",
       date: "2026-02-18",
       tags: ["portrait", "friends", "backstage"],
@@ -115,7 +115,7 @@ const state = {
       title: "Ridge trail group",
       type: "photo",
       access: "public",
-      url: "https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=900&q=80",
+      url: "abstract://media/ridge-trail-group",
       uploader: "Rohan Iyer",
       date: "2026-01-12",
       tags: ["mountains", "travel", "group", "sunset"],
@@ -135,7 +135,7 @@ const state = {
       title: "Prompt lab session",
       type: "photo",
       access: "private",
-      url: "https://images.unsplash.com/photo-1531482615713-2afd69097998?auto=format&fit=crop&w=900&q=80",
+      url: "abstract://media/prompt-lab-session",
       uploader: "Isha Kapoor",
       date: "2026-03-04",
       tags: ["workshop", "ai", "students", "laptop"],
@@ -155,7 +155,7 @@ const state = {
       title: "Final goal celebration",
       type: "photo",
       access: "public",
-      url: "https://images.unsplash.com/photo-1521412644187-c49fa049e84d?auto=format&fit=crop&w=900&q=80",
+      url: "abstract://media/final-goal-celebration",
       uploader: "Kabir Menon",
       date: "2026-03-21",
       tags: ["sports", "team", "action", "crowd"],
@@ -175,7 +175,7 @@ const state = {
       title: "Storage upload walkthrough",
       type: "video",
       access: "public",
-      url: "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4",
+      url: "abstract://media/storage-upload-walkthrough",
       uploader: "Meera Nair",
       date: "2026-03-04",
       tags: ["cloud", "demo", "workshop", "video"],
@@ -195,7 +195,7 @@ const state = {
       title: "Campfire circle",
       type: "photo",
       access: "private",
-      url: "https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?auto=format&fit=crop&w=900&q=80",
+      url: "abstract://media/campfire-circle",
       uploader: "Rohan Iyer",
       date: "2026-01-12",
       tags: ["travel", "camp", "friends", "night"],
@@ -215,7 +215,7 @@ const state = {
       title: "Trophy lift",
       type: "photo",
       access: "public",
-      url: "https://images.unsplash.com/photo-1547347298-4074fc3086f0?auto=format&fit=crop&w=900&q=80",
+      url: "abstract://media/trophy-lift",
       uploader: "Kabir Menon",
       date: "2026-03-21",
       tags: ["sports", "trophy", "team", "celebration"],
@@ -247,18 +247,18 @@ const roleAccess = {
 };
 
 const processingSteps = [
-  ["Upload", "Signed URL"],
-  ["Compress", "Thumbnail ready"],
-  ["Tag", "AI labels"],
-  ["Moderate", "Policy scan"],
-  ["Index", "Searchable"]
+  ["Intake", "Waiting"],
+  ["Optimize", "Queued"],
+  ["Classify", "Queued"],
+  ["Review", "Queued"],
+  ["Publish", "Queued"]
 ];
 
 const systemHealth = [
-  ["Storage sync", "Object storage and private bucket active", "99.9%"],
-  ["AI indexing", "Tags, captions, faces, duplicates", "Live"],
-  ["Access policy", "Signed URLs enforced for private media", "Healthy"],
-  ["Review queue", "Items waiting for admin decision", "3"]
+  ["Album spaces", "Public and private collections under role access", "Active"],
+  ["Search index", "Events, tags, people, status, and dates", "Synced"],
+  ["Sharing rules", "Public links and private permissions separated", "Applied"],
+  ["Review queue", "Items waiting for an admin decision", "3"]
 ];
 
 const $ = (selector) => document.querySelector(selector);
@@ -482,7 +482,7 @@ function renderDashboard() {
     const assets = state.media.filter((media) => media.eventId === event.id).length;
     return `
       <button class="album-mini" type="button" data-filter-event="${event.id}">
-        <img src="${event.cover}" alt="${event.name}" />
+        ${visualTile(event.category, event.name)}
         <span>${event.category}</span>
         <strong>${event.name}</strong>
         <small>${assets} assets - ${formatDate(event.date)}</small>
@@ -521,7 +521,7 @@ function renderEvents() {
     return `
       <article class="event-card">
         <div class="event-cover">
-          <img src="${event.cover}" alt="${event.name}" />
+          ${visualTile(event.category, event.name)}
           <span class="pill">${event.access}</span>
         </div>
         <div class="event-card-body">
@@ -563,9 +563,7 @@ function renderMediaCard(media) {
   const locked = !canView(media);
   const thumb = locked
     ? `<div class="locked"><strong>Private media</strong><span>Your account is not authorized to preview this item.</span></div>`
-    : media.type === "video"
-      ? `<video src="${media.url}" muted></video>`
-      : `<img src="${media.url}" alt="${media.title}" />`;
+    : visualTile(event.category, media.title, media.type);
 
   return `
     <article class="media-card">
@@ -578,12 +576,12 @@ function renderMediaCard(media) {
         <span class="card-kicker">${event.name}</span>
         <h3>${media.title}</h3>
         <p>${media.uploader} - ${formatDate(media.date)}</p>
-        <div class="tag-list">${media.tags.slice(0, 4).map((tag) => `<span class="tag">${tag}</span>`).join("")}</div>
+        <div class="tag-list">${media.tags.slice(0, 3).map((tag) => `<span class="tag">${tag}</span>`).join("")}</div>
         <div class="caption-box">${media.caption}</div>
         <div class="media-actions">
           <button type="button" data-like="${media.id}">Like ${media.likes}</button>
           <button type="button" data-comment="${media.id}">Comment</button>
-          <button type="button" data-tag-user="${media.id}">Tag Friend</button>
+          <button type="button" data-tag-user="${media.id}">Tag</button>
           <button type="button" data-fav="${media.id}">Fav ${media.favourites}</button>
           <button type="button" data-download="${media.id}" ${locked ? "disabled" : ""}>Watermark</button>
           <button type="button" data-share="${media.id}">Share</button>
@@ -610,7 +608,7 @@ function renderUploadOptions() {
   $("#processingBoard").innerHTML = processingSteps.map(([step, status]) => `
     <div class="processing-step">
       <strong>${step}</strong>
-      <span>${state.previews.length ? "Ready" : status}</span>
+      <span>${state.previews.length ? "Prepared" : status}</span>
     </div>
   `).join("");
 
@@ -630,9 +628,7 @@ function renderUploadOptions() {
 
 function renderAiLab() {
   $("#aiTagBoard").innerHTML = state.media.slice(0, 6).map((media) => {
-    const visual = media.type === "video"
-      ? `<video src="${media.url}" muted></video>`
-      : `<img src="${media.url}" alt="${media.title}" />`;
+    const visual = visualTile(eventById(media.eventId).category, media.title, media.type);
     return `
       <article class="ai-card">
         ${visual}
@@ -701,9 +697,7 @@ function renderSharing() {
 function renderModeration() {
   const items = state.media.filter((media) => media.status !== "approved");
   $("#moderationGrid").innerHTML = items.length ? items.map((media) => {
-    const visual = media.type === "video"
-      ? `<video src="${media.url}" muted></video>`
-      : `<img src="${media.url}" alt="${media.title}" />`;
+    const visual = visualTile(eventById(media.eventId).category, media.title, media.type);
     return `
       <article class="moderation-card">
         ${visual}
@@ -829,9 +823,7 @@ function openMedia(id) {
   const event = eventById(media.eventId);
   $("#dialogContent").innerHTML = `
     <div class="dialog-layout">
-      ${media.type === "video"
-        ? `<video src="${media.url}" controls autoplay></video>`
-        : `<img src="${media.url}" alt="${media.title}" />`}
+      ${visualTile(event.category, media.title, media.type)}
       <aside class="dialog-side">
         <span class="pill">${media.access}</span>
         <span class="risk-badge ${media.status}">${media.status}</span>
@@ -855,37 +847,69 @@ function openMedia(id) {
 function downloadWatermarked(id) {
   const media = state.media.find((item) => item.id === id);
   if (!media || !canView(media) || media.type !== "photo") {
-    createNotification("Video downloads and private locked media are disabled in this demo.");
+    createNotification("Video downloads and private locked media are not available for this item.");
     return;
   }
 
   const canvas = document.createElement("canvas");
   const ctx = canvas.getContext("2d");
-  const img = new Image();
-  img.crossOrigin = "anonymous";
-  img.onload = () => {
-    canvas.width = img.naturalWidth;
-    canvas.height = img.naturalHeight;
-    ctx.drawImage(img, 0, 0);
-    const event = eventById(media.eventId);
-    const label = `EventVault - ${event.name} - ${state.role}`;
-    ctx.fillStyle = "rgba(0, 0, 0, 0.5)";
-    ctx.fillRect(0, canvas.height - 78, canvas.width, 78);
-    ctx.fillStyle = "#fff";
-    ctx.font = `${Math.max(24, Math.round(canvas.width / 38))}px Arial`;
-    ctx.fillText(label, 28, canvas.height - 30);
-    const link = document.createElement("a");
-    link.download = `${media.title.toLowerCase().replaceAll(" ", "-")}-watermarked.png`;
-    link.href = canvas.toDataURL("image/png");
-    link.click();
-    createNotification(`Downloaded watermarked copy of ${media.title}.`);
-  };
-  img.onerror = () => createNotification("This browser blocked watermarking for the remote image.");
-  img.src = media.url;
+  const event = eventById(media.eventId);
+  const initials = media.title
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((word) => word[0])
+    .join("")
+    .toUpperCase();
+  canvas.width = 1280;
+  canvas.height = 850;
+
+  const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+  gradient.addColorStop(0, "#172554");
+  gradient.addColorStop(0.5, "#0f766e");
+  gradient.addColorStop(1, "#7c3aed");
+  ctx.fillStyle = gradient;
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctx.fillStyle = "rgba(255,255,255,0.12)";
+  ctx.beginPath();
+  ctx.arc(1030, 130, 230, 0, Math.PI * 2);
+  ctx.arc(150, 765, 190, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = "#ffffff";
+  ctx.font = "900 118px Inter, Arial";
+  ctx.fillText(initials || "EV", 72, 172);
+  ctx.font = "700 44px Inter, Arial";
+  ctx.fillText(media.title, 72, canvas.height - 124);
+  ctx.font = "600 28px Inter, Arial";
+  ctx.fillStyle = "rgba(255,255,255,0.78)";
+  ctx.fillText(`EventVault - ${event.name} - ${state.role}`, 72, canvas.height - 72);
+
+  const link = document.createElement("a");
+  link.download = `${media.title.toLowerCase().replaceAll(" ", "-")}-watermarked.png`;
+  link.href = canvas.toDataURL("image/png");
+  link.click();
+  createNotification(`Downloaded watermarked copy of ${media.title}.`);
 }
 
 function shareLinkPreview(eventId) {
   return `<div class="share-link-preview">${location.origin || "http://localhost:5173"}/index.html#gallery?event=${eventId}</div>`;
+}
+
+function visualTile(category = "media", title = "Media", type = "photo") {
+  const key = normalize(category).replace(/[^a-z0-9]+/g, "-") || "media";
+  const initials = title
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((word) => word[0])
+    .join("")
+    .toUpperCase();
+  return `
+    <div class="visual-tile visual-${key}">
+      <span>${type === "video" ? "VID" : initials || "EV"}</span>
+      <small>${category}</small>
+    </div>
+  `;
 }
 
 function bindEvents() {
@@ -1152,7 +1176,7 @@ async function createEvent() {
       category,
       date,
       description: "New collaborative event album ready for uploads, AI indexing, album sharing, and access rules.",
-      cover: "https://images.unsplash.com/photo-1511578314322-379afb476865?auto=format&fit=crop&w=900&q=80",
+      cover: "abstract://event/new",
       access: "mixed",
       collaborators: ["Admin"],
       story: "New highlight",

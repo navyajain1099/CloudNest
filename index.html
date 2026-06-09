@@ -13,7 +13,7 @@
           <span class="brand-mark">EV</span>
           <p class="eyebrow">Secure workspace</p>
           <h1 id="login-heading">Sign in to EventVault</h1>
-          <p>Access event albums, uploads, moderation, discovery, and sharing based on your assigned role.</p>
+          <p>Run a secure event-media workspace with albums, uploads, review, discovery, and sharing based on your assigned role.</p>
         </div>
         <form id="loginForm" class="login-form">
           <div class="auth-tabs" role="tablist" aria-label="Authentication mode">
@@ -49,7 +49,7 @@
       </div>
     </section>
 
-    <div class="app-shell">
+    <div class="app-shell product-shell">
       <aside class="sidebar" aria-label="Main navigation">
         <a class="brand" href="#dashboard" aria-label="EventVault home">
           <span class="brand-mark">EV</span>
@@ -71,7 +71,7 @@
           <a href="#analytics" class="nav-link" data-view-link="analytics">Analytics</a>
         </nav>
 
-        <section class="role-panel" aria-labelledby="session-title">
+        <section class="role-panel account-pill" aria-labelledby="session-title">
           <p id="session-title" class="eyebrow">Signed In</p>
           <div class="session-user">
             <strong id="sessionName">Admin</strong>
@@ -85,7 +85,7 @@
       <main class="workspace">
         <header class="topbar">
           <div>
-            <p class="eyebrow">Production-ready event media platform</p>
+            <p class="eyebrow">Event media workspace</p>
             <h1 id="viewTitle">Dashboard</h1>
           </div>
           <div class="topbar-actions">
@@ -95,7 +95,7 @@
             </label>
             <button class="icon-btn" id="notificationButton" type="button" aria-label="Open notifications">
               <span class="dot" id="notificationDot"></span>
-              <span aria-hidden="true">Bell</span>
+              <span aria-hidden="true">Alerts</span>
             </button>
           </div>
         </header>
@@ -113,7 +113,7 @@
             <div>
               <p class="eyebrow">Today</p>
               <h2 id="dashboard-heading">Workspace overview</h2>
-              <p id="dashboardGreeting">Your event media workspace is ready.</p>
+              <p id="dashboardGreeting">Manage events, approvals, private albums, uploads, and discovery from one signed-in workspace.</p>
             </div>
             <div class="business-actions">
               <button class="primary-btn" data-jump="upload" type="button">Upload Media</button>
@@ -155,8 +155,8 @@
             <section class="panel">
               <div class="section-head">
                 <div>
-                  <p class="eyebrow">System health</p>
-                  <h3>Storage & AI Status</h3>
+                  <p class="eyebrow">Operations</p>
+                  <h3>Workspace Activity</h3>
                 </div>
               </div>
               <div id="featureChecklist" class="feature-list"></div>
@@ -230,7 +230,7 @@
         <section class="view" id="uploadView" data-view="upload" aria-labelledby="upload-heading">
           <div class="section-head stacked">
             <div>
-              <p class="eyebrow">Bulk upload pipeline</p>
+              <p class="eyebrow">Upload intake</p>
               <h2 id="upload-heading">Upload Studio</h2>
             </div>
           </div>
@@ -299,28 +299,31 @@
         <section class="view" id="discoverView" data-view="discover" aria-labelledby="discover-heading">
           <div class="discover-layout">
             <section class="panel selfie-panel">
-              <p class="eyebrow">Facial recognition workflow</p>
-              <h2 id="discover-heading">Find Photos Containing You</h2>
-              <p>Upload a reference selfie to create a local match profile and return accessible photos containing that person.</p>
-              <input id="selfieInput" type="file" accept="image/*" hidden />
-              <button class="primary-btn" id="selfieButton" type="button">Upload Reference Selfie</button>
-              <div id="selfiePreview" class="selfie-preview">No selfie selected</div>
-              <div class="face-steps">
-                <span>Detect face</span>
-                <span>Create embedding</span>
-                <span>Match gallery</span>
-                <span>Show accessible results</span>
+              <div class="face-copy">
+                <p class="eyebrow">Facial recognition workflow</p>
+                <h2 id="discover-heading">Find photos containing a member</h2>
+                <p>Upload a reference selfie and EventVault returns accessible event photos matched to that person.</p>
+                <input id="selfieInput" type="file" accept="image/*" hidden />
+                <button class="primary-btn" id="selfieButton" type="button">Upload Reference Selfie</button>
+                <div class="face-steps">
+                  <span>Detect face</span>
+                  <span>Create profile</span>
+                  <span>Search albums</span>
+                  <span>Return matches</span>
+                </div>
               </div>
+              <div id="selfiePreview" class="selfie-preview">No selfie selected</div>
             </section>
-            <section>
-              <div class="section-head">
+            <section class="panel match-panel">
+              <div class="section-head stacked">
                 <div>
                   <p class="eyebrow">Personalized section</p>
-                  <h3>Face Matches</h3>
+                  <h2>Face Matches</h2>
+                  <p class="section-copy">Only media available to the signed-in account is shown here.</p>
                 </div>
                 <span class="pill" id="matchCount">0 matches</span>
               </div>
-              <div class="media-grid compact-grid" id="matchGrid"></div>
+              <div class="match-grid" id="matchGrid"></div>
             </section>
           </div>
         </section>

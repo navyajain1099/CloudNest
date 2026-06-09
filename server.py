@@ -51,6 +51,8 @@ def media_row(row):
     item["tags"] = as_list(item.get("tags"))
     item["faces"] = as_list(item.get("faces"))
     item["comments"] = as_list(item.get("comments"))
+    if item.get("url", "").startswith(("https://images.unsplash.com", "https://interactive-examples.mdn.mozilla.net")):
+        item["url"] = f"abstract://media/{item['id']}"
     return item
 
 
@@ -251,6 +253,8 @@ def bootstrap(role="admin"):
         for row in db.execute("SELECT * FROM events ORDER BY date DESC"):
             event = dict(row)
             event["collaborators"] = as_list(event["collaborators"])
+            if event.get("cover", "").startswith("https://images.unsplash.com"):
+                event["cover"] = f"abstract://event/{event['id']}"
             events.append(event)
         if can_read_private(role):
             media_rows = db.execute("SELECT * FROM media ORDER BY date DESC, id DESC")
